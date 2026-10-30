@@ -85,6 +85,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, .tab:focus-vi
   display: inline-flex; align-items: center; gap: 10px; background: var(--wa); color: var(--wa-fg); text-decoration: none;
   font-weight: 700; font-size: 17px; padding: 14px 26px; border-radius: 12px;
 }
+.send.mail { background: var(--brand); color: var(--brand-fg); }
 .send svg { width: 22px; height: 22px; fill: currentColor; }
 .copy { font: inherit; font-weight: 700; background: transparent; color: var(--brand); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; cursor: pointer; }
 .msg { font-size: 14px; color: var(--muted); }
@@ -119,7 +120,7 @@ body{margin:0}
   </header>
 
   <h1>Tell us where you want to go.</h1>
-  <p class="lead">Fill in your trip, tap the WhatsApp button, and your request reaches us in one message. We reply with the best fare and book it for you.</p>
+  <p class="lead">Fill in your trip, then send it by WhatsApp or email. Your request reaches us in one message. We reply with the best fare and book it for you.</p>
 
   <form class="card" id="form" novalidate>
     <div class="tabs" role="tablist" aria-label="Service">
@@ -171,8 +172,12 @@ body{margin:0}
         <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9 3 3.4 8.6 3.4 15.5c0 2.3.6 4.4 1.7 6.3L3 29l7.4-2c1.8 1 3.800 1.500 5.900 1.500 6.900 0 12.500-5.600 12.500-12.500S22.900 3 16 3zm0 22.900c-1.900 0-3.700-.5-5.300-1.500l-.4-.2-4.400 1.200 1.200-4.300-.3-.4a10.300 10.300 0 0 1-1.600-5.500C5.200 9.700 10 5.100 16 5.100s10.800 4.700 10.800 10.400S21.900 25.900 16 25.900zm5.800-7.700c-.3-.2-1.900-.9-2.200-1s-.5-.2-.7.200-.8 1-1 1.200-.4.200-.7.100a8.600 8.600 0 0 1-4.300-3.700c-.3-.6.300-.6.900-1.800.1-.2 0-.4 0-.5l-1-2.300c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.100-.9.400s-1.200 1.200-1.200 2.800 1.200 3.300 1.400 3.500 2.400 3.700 5.800 5.100c2.100.9 2.900.9 4 .8.600-.1 1.900-.8 2.200-1.500s.3-1.400.2-1.500-.3-.2-.6-.4z"/></svg>
         <span>Send request on WhatsApp</span>
       </a>
+      <a class="send mail" id="mail" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm9 7.2L4.6 7H4v.4l8 5.600 8-5.600V7h-.6L12 12.200zM4 9.800V17h16V9.800l-8 5.600-8-5.600z"/></svg>
+        <span>Send request by email</span>
+      </a>
       <button type="button" class="copy" id="copy">Copy message</button>
-      <span class="msg" id="status" role="status">Opens WhatsApp with your request already written.</span>
+      <span class="msg" id="status" role="status">Choose WhatsApp or email. Your request is already written for you.</span>
     </div>
 
     <div class="preview">
@@ -183,7 +188,7 @@ body{margin:0}
 
   <div class="steps">
     <div><b>1. Fill the form</b>Choose flight or train and enter your trip.</div>
-    <div><b>2. Send on WhatsApp</b>Tap the green button. Your message is written for you.</div>
+    <div><b>2. Send it to us</b>Tap WhatsApp or email. Your message is written for you.</div>
     <div><b>3. We confirm</b>We reply with price and options, then book after you agree.</div>
   </div>
 
@@ -192,12 +197,13 @@ body{margin:0}
     <div><b>Office 2</b><span>Kailashahar, Unakoti, Tripura</span></div>
   </section>
 
-  <footer>Email: ud960064@gmail.com &nbsp;|&nbsp; WhatsApp: +91 98629 60064<br>U-Y Travels takes booking requests only. Nothing is booked and no payment is taken until we confirm with you on WhatsApp.</footer>
+  <footer>Email: ud960064@gmail.com &nbsp;|&nbsp; WhatsApp: +91 98629 60064<br>U-Y Travels takes booking requests only. Nothing is booked and no payment is taken until we confirm with you.</footer>
 </div>
 
 <script>
 (function () {
   var NUMBER = "919862960064";
+  var EMAIL = "ud960064@gmail.com";
   var $ = function (id) { return document.getElementById(id); };
   var tab = "flight";
   var titles = { flight: "Flight", train: "Train" };
@@ -249,6 +255,7 @@ body{margin:0}
     var text = build();
     $("preview").textContent = text;
     $("send").href = "https://wa.me/" + NUMBER + "?text=" + encodeURIComponent(text);
+    $("mail").href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Booking request - U-Y Travels (" + titles[tab] + ")") + "&body=" + encodeURIComponent(text);
   }
 
   function activeFields() {
@@ -279,7 +286,7 @@ body{margin:0}
     tab = t;
     document.querySelectorAll(".tab").forEach(function (b) { b.setAttribute("aria-selected", b.dataset.tab === t ? "true" : "false"); });
     document.querySelectorAll("[data-svc]").forEach(function (d) { d.classList.toggle("on", d.dataset.svc === t); });
-    setStatus("Opens WhatsApp with your request already written.");
+    setStatus("Choose WhatsApp or email. Your request is already written for you.");
     refresh();
   }
 
@@ -306,6 +313,18 @@ body{margin:0}
     } else {
       refresh();
       setStatus("WhatsApp opened in a new tab. Press Send there to deliver your request.");
+    }
+  });
+
+  $("mail").addEventListener("click", function (e) {
+    var r = validate();
+    if (r.first) {
+      e.preventDefault();
+      setStatus(r.msg, true);
+      r.first.focus();
+    } else {
+      refresh();
+      setStatus("Your email app should open. Press Send there to deliver your request.");
     }
   });
 
